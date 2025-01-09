@@ -18,7 +18,7 @@ const Search = () => {
                 <Button content="Get A Free Audit" style="border border-b-8 border-slate-900" />
             </div>
 
-            <img src={seoimg} alt='seo' className='h-[400px] rounded-3xl hidden md:block ' />
+            <img src={seoimg} alt='seo' className='h-[400px] w-[550px] rounded-3xl hidden md:block ' />
         </div>
     )
 }
