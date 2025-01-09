@@ -21,7 +21,7 @@ const Hero = () => {
         </div>
 
         <div className='w-full  bg-gradient-to-t from-slate-800 to-black rounded-3xl text-white p-5 '>
-            <h1>Our Latest Work</h1>
+            <h1 className='text-2xl font-semibold'>Our Latest Work</h1>
             <div className='flex items-center justify-evenly'>
                 <HeroCard heading="HAZE PRODUCTIONS" btnval="View Work" imgval={bgimg} />
                 <HeroCard heading="SMART WEALTH.AI" btnval="View Work" imgval={bgimg2} />
