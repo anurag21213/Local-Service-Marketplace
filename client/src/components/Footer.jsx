@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Footer = () => {
   return (
-    <footer className='w-full flex items-center justify-center p-5 my-5 gap-10'>
-        <div className='w-[30%] flex items-center justify-center'>
+    <footer className='w-full flex items-center justify-center p-5 my-5 gap-10 flex-col md:flex-row'>
+        <div className='md:w-[30%] flex items-center justify-center'>
             <h1 className='text-6xl font-semibold'>UNICO</h1>
         </div>
-        <div className='flex items-center justify-evenly gap-5 w-[70%]'>
+        <div className='flex items-center justify-evenly gap-5 md:w-[70%] flex-col md:flex-row'>
             <div>
                 <h1 className='text-3xl my-3 font-semibold'>Content</h1>
                 <p className='text-lg'>Home</p>
