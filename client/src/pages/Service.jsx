@@ -1,20 +1,20 @@
 import React from 'react'
-import Navbar from'../components/Navbar'
-import Search from '../components/Search'
-import AboutSeo from '../components/AboutSeo'
-import Faq from '../components/Faq'
-import Demo from '../components/Demo'
+import Navbar from '../components/Navbar'
+import Search from '../components/ServiceComponents/Search'
+import AboutSeo from '../components/ServiceComponents/AboutSeo'
+import Faq from '../components/ServiceComponents/Faq'
+import Demo from '../components/ServiceComponents/Demo'
 import Footer from '../components/Footer'
 
 const Service = () => {
   return (
     <div>
-      <Navbar/>
-      <Search/>
-      <AboutSeo/>
-      <Faq/>
-      <Demo/>
-      <Footer/>
+      <Navbar />
+      <Search />
+      <AboutSeo />
+      <Faq />
+      <Demo />
+      <Footer />
     </div>
   )
 }

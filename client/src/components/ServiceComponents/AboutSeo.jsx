@@ -1,6 +1,6 @@
 import React from 'react'
-import img from '../assets/images/searchpic.png'
-import { promoData } from '../database/promoData'
+import img from '../../assets/images/searchpic.png'
+import { promoData } from '../../database/promoData'
 
 
 const AboutSeo = () => {

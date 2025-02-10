@@ -1,10 +1,7 @@
 import React from 'react'
-import HeroCard from './HeroCard'
-import bgimg from '../assets/images/img2.jpg'
-import bgimg2 from '../assets/images/img1.jpg'
-import Button from './Button'
+import Button from '.././Button'
 import WorkCard from './WorkCard'
-import { wordData } from '../database/wordData'
+import { wordData } from '../../database/wordData'
 
 const Work = () => {
     return (

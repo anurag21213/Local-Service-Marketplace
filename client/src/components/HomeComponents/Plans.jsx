@@ -1,6 +1,6 @@
 import React from 'react'
-import Button from './Button'
-import { planData } from '../database/PanData'
+import Button from '.././Button'
+import { planData } from '../../database/PanData'
 import PlanCard from './PlanCard'
 
 const Plans = () => {

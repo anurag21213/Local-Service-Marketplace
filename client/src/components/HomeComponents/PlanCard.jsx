@@ -1,7 +1,7 @@
 import React from 'react'
 import { faRupee } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Button from './Button'
+import Button from '../Button'
 
 const PlanCard = ({heading,li,subh,des,btnval}) => {
     return (

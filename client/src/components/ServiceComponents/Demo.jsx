@@ -1,6 +1,6 @@
 import React from 'react'
-import Button from './Button'
-import roc from '../assets/images/rocket.png'
+import Button from '.././Button'
+import roc from '../../assets/images/rocket.png'
 
 const Demo = () => {
     return (

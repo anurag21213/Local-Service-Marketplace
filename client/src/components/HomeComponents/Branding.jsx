@@ -1,5 +1,5 @@
 import React from 'react'
-import { brandData } from '../database/brandData'
+import { brandData } from '../../database/brandData'
 
 const Branding = () => {
   return (

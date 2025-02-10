@@ -1,5 +1,5 @@
 import React from 'react'
-import bgimg2 from '../assets/images/img1.jpg'
+// import bgimg2 from '../assets/images/img1.jpg'
 const WorkCard = ({img,heading,des}) => {
   return (
     <div  >

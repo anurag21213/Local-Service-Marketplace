@@ -1,6 +1,6 @@
 import React from 'react'
-import Button from './Button'
-import seoimg from '../assets/images/seoimg.png'
+import Button from '../Button'
+import seoimg from '../../assets/images/seoimg.png'
 
 const Search = () => {
     return (

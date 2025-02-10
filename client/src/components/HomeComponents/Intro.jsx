@@ -1,5 +1,5 @@
 import React from 'react'
-import { introdata } from '../database/introdata'
+import { introdata } from '../../database/introdata'
 import Introcard from './Introcard'
 
 const Intro = () => {
