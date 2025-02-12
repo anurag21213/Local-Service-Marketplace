@@ -28,8 +28,8 @@ const Cover = () => {
                 <div className='w-full flex items-center justify-evenly'>
                     
 
-                    <button onClick={()=>navigate('/home')} className={`outline-none md:p-4 p-2 bg-black text-white text-lg md:text-xl rounded-3xl hover:scale-105 w-[200px] hover:bg-gradient-to-bl from-blue-400 to-slate-500`} >Client <FontAwesomeIcon icon={faArrowRight} /></button>
-                    <button onClick={()=>navigate('/home')} className={`outline-none md:p-4 p-2 bg-black text-white text-lg md:text-xl rounded-3xl hover:scale-105 w-[200px] hover:bg-gradient-to-bl from-blue-400 to-slate-500`} >Service Provider <FontAwesomeIcon icon={faArrowRight} /></button>
+                    <button onClick={()=>navigate('/clientlogin')} className={`outline-none md:p-4 p-2 bg-black text-white text-lg md:text-xl rounded-3xl hover:scale-105 w-[200px] hover:bg-gradient-to-bl from-blue-400 to-slate-500`} >Client <FontAwesomeIcon icon={faArrowRight} /></button>
+                    <button onClick={()=>navigate('/login')} className={`outline-none md:p-4 p-2 bg-black text-white text-lg md:text-xl rounded-3xl hover:scale-105 w-[200px] hover:bg-gradient-to-bl from-blue-400 to-slate-500`} >Service Provider <FontAwesomeIcon icon={faArrowRight} /></button>
                 </div>
             </div>
 
