@@ -26,7 +26,7 @@ const Login = () => {
         
         if (data.token) {
           toast.success("Login Successful");
-          localStorage.setItem('user',token);
+          
           navigate('/home');
         }
       } catch (error) {
