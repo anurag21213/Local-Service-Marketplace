@@ -5,10 +5,14 @@ import Cover from "./pages/Cover"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import { ToastContainer, toast } from 'react-toastify';
+import Profile from "./pages/Profile"
+
+
 
 
 function App() {
 
+  
   
  
 
@@ -21,6 +25,7 @@ function App() {
       <Route path="/clientregister" Component={Register} />
       <Route path="/home" Component={Home} />
       <Route path="/services" Component={Service} /> 
+      <Route path ="/profile" Component={Profile} />
      </Routes>
     </>
   )

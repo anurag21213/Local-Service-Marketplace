@@ -12,7 +12,7 @@ const Navbar = () => {
     if(currpath==pathroute){
       classes+="bg-white text-black"
     }
-    console.log(classes);
+    // console.log(classes);
     
     return classes
     
