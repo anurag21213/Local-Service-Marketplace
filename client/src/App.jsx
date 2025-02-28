@@ -4,6 +4,8 @@ import Service from "./pages/Service"
 import Cover from "./pages/Cover"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
+import ProviderLogin from "./pages/serviceprovider/ProviderLogin"
+import ProviderRegister from "./pages/serviceprovider/ProviderRegister"
 import { ToastContainer, toast } from 'react-toastify';
 import Profile from "./pages/Profile"
 
@@ -23,6 +25,9 @@ function App() {
       <Route path="/" Component={Cover}  />
       <Route path="/clientlogin" Component={Login} />
       <Route path="/clientregister" Component={Register} />
+      <Route path="/providerregister" Component={ProviderRegister} />
+      <Route path="/providerlogin" Component={ProviderLogin} />
+
       <Route path="/home" Component={Home} />
       <Route path="/services" Component={Service} /> 
       <Route path ="/profile" Component={Profile} />
