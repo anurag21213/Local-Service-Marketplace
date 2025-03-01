@@ -1,10 +1,10 @@
 import React from 'react'
-import ProviderNavbar from './ProviderNavbar' 
+import ProviderNavbar from '../../components/ProviderComponents/ProviderNavbar'
 
 const ProviderDashboard = () => {
   return (
     <div>
-      <ProviderNavbar/>
+      <ProviderNavbar />
       Dashboard
     </div>
   )
