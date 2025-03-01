@@ -8,6 +8,8 @@ import ProviderLogin from "./pages/serviceprovider/ProviderLogin"
 import ProviderRegister from "./pages/serviceprovider/ProviderRegister"
 import { ToastContainer, toast } from 'react-toastify';
 import Profile from "./pages/Profile"
+import ProviderProfile from "./components/ProviderComponents/ProviderProfile"
+import ProviderDashboard from "./components/ProviderComponents/ProviderDashboard"
 
 
 
@@ -27,6 +29,8 @@ function App() {
       <Route path="/clientregister" Component={Register} />
       <Route path="/providerregister" Component={ProviderRegister} />
       <Route path="/providerlogin" Component={ProviderLogin} />
+      <Route path="/providerprofile" Component={ProviderProfile} />
+      <Route path="/providerdashboard" Component={ProviderDashboard} />
 
       <Route path="/home" Component={Home} />
       <Route path="/services" Component={Service} /> 

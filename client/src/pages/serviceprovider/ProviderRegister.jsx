@@ -20,7 +20,7 @@ const Register = () => {
     phone: "",
     category: "",
     price: "",
-    isVerified:false
+    flag:0
     
   });
 
@@ -95,7 +95,7 @@ const Register = () => {
       // console.log(similarity);
       // console.log(sim);
       if(sim>=0.92){
-        setFormData({...formData,isVerified:true})
+        setFormData({...formData,flag:1})
         toast.success("successfully verified")
       }
       else{
@@ -110,22 +110,25 @@ const Register = () => {
   // Submit form data
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let { confirmPassword, ...rest } = formData;
+      
+    const resData = new FormData();
+    Object.keys(formData).forEach((key) => resData.append(key, formData[key]));
+
+
+
     try {
-      const { confirmPassword, ...rest } = formData;
-      console.log(rest);
-      console.log(similarity);
       
       
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/spSignup`, {
         method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(rest),
+        body: resData,
       });
 
       const data = await res.json();
-      if (data.message === "Service Provider registered successfully") {
+      if (data.message === "User registered successfully") {
         toast.success("Registration Success");
-        navigate('/home');
+        navigate('/providerdashboard');
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
