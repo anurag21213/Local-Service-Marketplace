@@ -9,7 +9,11 @@ import ProviderRegister from "./pages/serviceprovider/ProviderRegister"
 import { ToastContainer, toast } from 'react-toastify';
 import Profile from "./pages/Profile"
 import ProviderProfile from "./pages/serviceprovider/ProviderProfile"
-import ProviderDashboard from "./pages/serviceprovider/ProviderDashboard"
+import ProviderDashboard from "./pages/serviceprovider/ProviderDashboard";
+import ServiceRequests from "./pages/serviceprovider/ServiceRequests";
+import AvailabilityManager from "./pages/serviceprovider/AvailabilityManager";
+import ServiceDisplay from "./pages/ServiceDisplay";
+
 
 
 
@@ -34,6 +38,7 @@ function App() {
 
         <Route path="/home" Component={Home} />
         <Route path="/services" Component={Service} />
+        <Route path="/service/:service" Component={ServiceDisplay} />
         <Route path="/profile" Component={Profile} />
       </Routes>
     </>

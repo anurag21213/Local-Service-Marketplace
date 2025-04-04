@@ -73,7 +73,7 @@ const Register = () => {
 
       if(data.message==="User registered successfully"){
         toast.success("Registration Success")
-        navigate('/home')
+        navigate('/clientlogin')
       }
       
     } catch (error) {
