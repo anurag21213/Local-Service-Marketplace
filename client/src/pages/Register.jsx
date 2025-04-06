@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import Particle from "../components/ParticleComponent/Particle";
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
+import LoginLoader from "../components/LoginLoader";
 
 import { messaging } from "../firebase";
 import { onMessage, getToken } from "firebase/messaging";
 import { useNavigate } from "react-router-dom";
 
-
-
 const Register = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,25 +41,16 @@ const Register = () => {
   //   requestPermission()
   // }, []);
 
-
-
-
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-   
+    setIsLoading(true);
 
     try {
       const { confirmPassword, ...rest } = formData
-      console.log(rest);
 
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/clSignup`, {
         "method": 'post',
@@ -71,34 +62,26 @@ const Register = () => {
 
       const data = await res.json()
 
-      if(data.message==="User registered successfully"){
+      if (data.message === "User registered successfully") {
         toast.success("Registration Success")
         navigate('/clientlogin')
+      } else {
+        toast.error(data.message || "Registration failed");
       }
-      
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setIsLoading(false);
     }
-
-
-
-
-
-
-
-
-
-
   };
 
   return (
-
     <div className="flex h-screen w-full items-center justify-center">
-
+      {isLoading && <LoginLoader isLoggingIn={false} />}
       <div className="flex justify-center items-center w-full z-10">
-        <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] lg:w-[500px] ">
+        <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] lg:w-[500px]">
           <h2 className="text-2xl font-semibold text-center mb-4">
-            Sign in to your account
+            Create your account
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -112,6 +95,7 @@ const Register = () => {
                 onChange={handleChange}
                 className="w-full mt-1 p-2 lg:h-14 lg:text-lg border border-gray-300 rounded-lg outline-none"
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -125,6 +109,7 @@ const Register = () => {
                 onChange={handleChange}
                 className="w-full mt-1 p-2 lg:h-14 lg:text-lg border border-gray-300 rounded-lg outline-none"
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -138,6 +123,7 @@ const Register = () => {
                 onChange={handleChange}
                 className="w-full mt-1 p-2 lg:h-14 lg:text-lg border border-gray-300 rounded-lg outline-none"
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -151,6 +137,7 @@ const Register = () => {
                 onChange={handleChange}
                 className="w-full mt-1 p-2 lg:h-14 lg:text-lg border border-gray-300 rounded-lg outline-none"
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -164,6 +151,7 @@ const Register = () => {
                 onChange={handleChange}
                 className="w-full mt-1 p-2 lg:h-14 lg:text-lg border border-gray-300 rounded-lg outline-none"
                 required
+                disabled={isLoading}
               />
             </div>
             {
@@ -172,12 +160,12 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? 'Creating account...' : 'Sign up'}
             </button>
           </form>
-
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Already have account? <Link to="/clientlogin" className="text-blue-600">Login here</Link>
@@ -186,9 +174,7 @@ const Register = () => {
       </div>
 
       <Particle />
-
     </div>
-
   );
 };
 
