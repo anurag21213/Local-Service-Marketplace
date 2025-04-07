@@ -117,7 +117,7 @@ const Register = () => {
       const data = await res.json();
       if (data.message === "User registered successfully") {
         toast.success("Registration Success");
-        navigate('/providerdashboard');
+        navigate('/providerlogin');
       } else {
         toast.error(data.message || "Registration failed");
       }
