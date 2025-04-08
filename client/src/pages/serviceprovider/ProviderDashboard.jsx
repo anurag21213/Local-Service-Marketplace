@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Tabs, Tab, Typography, Container, Paper, Grid, Card, CardContent, Avatar } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,10 +11,6 @@ import {
 import ServiceRequests from './ServiceRequests';
 import AvailabilityManager from './AvailabilityManager';
 import Navbar from '../../components/ProviderComponents/ProviderNavbar';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { selectCurrentUser, selectIsAuthenticated } from '../../store/slices/authSlice';
-import { toast } from 'react-toastify';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -36,22 +32,7 @@ function TabPanel(props) {
     );
 }
 
-const ProviderDashboard = () => {
-    const user = useSelector(selectCurrentUser);
-    const isAuthenticated = useSelector(selectIsAuthenticated);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!isAuthenticated || !user?.isProvider) {
-            toast.error('Please login as a service provider to access this page');
-            navigate('/providerlogin');
-        }
-    }, [isAuthenticated, user, navigate]);
-
-    if (!user || !user.isProvider) {
-        return null;
-    }
-
+function ProviderDashboard() {
     const [tabValue, setTabValue] = useState(0);
 
     const handleTabChange = (event, newValue) => {
@@ -75,7 +56,7 @@ const ProviderDashboard = () => {
                     <Grid container spacing={3} alignItems="center">
                         <Grid item xs={12} md={8}>
                             <Typography variant="h4" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}>
-                                Welcome back, {user.name}
+                                Welcome back, John Doe
                             </Typography>
                             <Typography variant="subtitle1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                                 Here's what's happening with your services today
@@ -83,7 +64,7 @@ const ProviderDashboard = () => {
                         </Grid>
                         <Grid item xs={12} md={4} sx={{ textAlign: 'right' }}>
                             <Avatar sx={{ width: 100, height: 100, margin: '0 auto', fontSize: '3rem' }}>
-                                {user.name?.[0]?.toUpperCase()}
+                                J
                             </Avatar>
                         </Grid>
                     </Grid>
@@ -186,6 +167,6 @@ const ProviderDashboard = () => {
             </Container>
         </Box>
     );
-};
+}
 
 export default ProviderDashboard; 
