@@ -1,5 +1,5 @@
 import ui from '../assets/images/ui.png'
-import Furtool from '../assets/images/Furtool.png'
+import Furtool from '../assets/images/FurTool.png'
 import Electool from '../assets/images/Electool.png'
 import td from '../assets/images/3d.png'
 import painttool from '../assets/images/painttool.png'
