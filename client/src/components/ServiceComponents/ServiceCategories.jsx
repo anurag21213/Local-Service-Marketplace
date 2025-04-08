@@ -1,12 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faWrench,
+    faHammer,
+    faBolt,
+    faPaintRoller,
+    faCar,
+    faHome,
+    faTools,
+    faCogs,
+    faTruck,
+    faBuilding,
+    faTrowel,
+    faFan
+} from '@fortawesome/free-solid-svg-icons';
 
 const ServiceCategories = () => {
     const services = [
         {
             id: 1,
             title: 'Plumbing',
-            icon: <i className="fas fa-faucet text-5xl text-blue-600"></i>,
+            icon: <FontAwesomeIcon icon={faWrench} className="text-5xl text-blue-600" />,
             description: 'Professional plumbing services for your home and business needs.',
             bgColor: 'bg-blue-50',
             hoverColor: 'hover:bg-blue-100',
@@ -14,7 +29,7 @@ const ServiceCategories = () => {
         {
             id: 2,
             title: 'Carpentry',
-            icon: <i className="fas fa-hammer text-5xl text-amber-600"></i>,
+            icon: <FontAwesomeIcon icon={faHammer} className="text-5xl text-amber-600" />,
             description: 'Expert carpentry work for furniture, doors, and home improvements.',
             bgColor: 'bg-amber-50',
             hoverColor: 'hover:bg-amber-100',
@@ -22,7 +37,7 @@ const ServiceCategories = () => {
         {
             id: 3,
             title: 'Electrical',
-            icon: <i className="fas fa-bolt text-5xl text-yellow-600"></i>,
+            icon: <FontAwesomeIcon icon={faBolt} className="text-5xl text-yellow-600" />,
             description: 'Safe and reliable electrical services for all your power needs.',
             bgColor: 'bg-yellow-50',
             hoverColor: 'hover:bg-yellow-100',
@@ -30,7 +45,7 @@ const ServiceCategories = () => {
         {
             id: 4,
             title: 'Painting',
-            icon: <i className="fas fa-paint-roller text-5xl text-red-600"></i>,
+            icon: <FontAwesomeIcon icon={faPaintRoller} className="text-5xl text-red-600" />,
             description: 'Professional painting services for interior and exterior spaces.',
             bgColor: 'bg-red-50',
             hoverColor: 'hover:bg-red-100',
@@ -38,7 +53,7 @@ const ServiceCategories = () => {
         {
             id: 5,
             title: 'Automotive',
-            icon: <i className="fas fa-car text-5xl text-green-600"></i>,
+            icon: <FontAwesomeIcon icon={faCar} className="text-5xl text-green-600" />,
             description: 'Comprehensive automotive repair and maintenance services.',
             bgColor: 'bg-green-50',
             hoverColor: 'hover:bg-green-100',
@@ -46,11 +61,35 @@ const ServiceCategories = () => {
         {
             id: 6,
             title: 'Home Maintenance',
-            icon: <i className="fas fa-home text-5xl text-purple-600"></i>,
+            icon: <FontAwesomeIcon icon={faHome} className="text-5xl text-purple-600" />,
             description: 'Complete home maintenance and repair solutions.',
             bgColor: 'bg-purple-50',
             hoverColor: 'hover:bg-purple-100',
         },
+        {
+            id: 7,
+            title: 'HVAC',
+            icon: <FontAwesomeIcon icon={faFan} className="text-5xl text-indigo-600" />,
+            description: 'Heating, ventilation, and air conditioning services.',
+            bgColor: 'bg-indigo-50',
+            hoverColor: 'hover:bg-indigo-100',
+        },
+        {
+            id: 8,
+            title: 'Construction',
+            icon: <FontAwesomeIcon icon={faBuilding} className="text-5xl text-orange-600" />,
+            description: 'Professional construction and renovation services.',
+            bgColor: 'bg-orange-50',
+            hoverColor: 'hover:bg-orange-100',
+        },
+        {
+            id: 9,
+            title: 'Masonry',
+            icon: <FontAwesomeIcon icon={faTrowel} className="text-5xl text-gray-600" />,
+            description: 'Expert masonry and stonework services.',
+            bgColor: 'bg-gray-50',
+            hoverColor: 'hover:bg-gray-100',
+        }
     ];
 
     return (
@@ -77,9 +116,11 @@ const ServiceCategories = () => {
                             </div>
                             <h3 className="text-2xl font-semibold text-center mb-4 text-gray-800">{service.title}</h3>
                             <p className="text-gray-600 text-center mb-6">{service.description}</p>
-                            <Link to={`/service/${service.title.toLowerCase()}`}><button className="w-full py-3 px-6 rounded-lg bg-white text-gray-800 font-medium shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 hover:border-gray-300">
-                                Learn More
-                            </button></Link>
+                            <Link to={`/service/${service.title.toLowerCase()}`}>
+                                <button className="w-full py-3 px-6 rounded-lg bg-white text-gray-800 font-medium shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 hover:border-gray-300">
+                                    Learn More
+                                </button>
+                            </Link>
                         </div>
                     ))}
                 </div>
