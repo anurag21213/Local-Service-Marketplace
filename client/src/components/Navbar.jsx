@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { faBars,faClose } from '@fortawesome/free-solid-svg-icons'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { faBars,faClose,faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useDispatch } from 'react-redux'
+import { logout } from '../store/slices/authSlice'
+import { toast } from 'react-toastify'
 
 const Navbar = () => {
 
   const [open, setOpen] = useState(false)
   const path = useLocation().pathname
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const pathroute = path.split('/')?.[1]
 
@@ -25,6 +30,11 @@ const Navbar = () => {
   const handleOpen=()=>{
     setOpen((prev)=>!prev)
   }
+  const handleLogout = () => {
+    dispatch(logout())
+    toast.success('Logged out successfully')
+    navigate('/clientlogin')
+}
 
   return (
     <div>
@@ -36,8 +46,14 @@ const Navbar = () => {
             <NavLink to='/home' ><li className={applyActive('home')}>Home</li></NavLink>
             <li className={applyActive('about')}>About Us</li>
             <NavLink to='/services' ><li className={applyActive('services')}>Services</li></NavLink>
-            <li className={applyActive('work')}>Our Work</li>
             <li className={applyActive('contact')}>Contact Us</li>
+            <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 p-2 hover:bg-white hover:text-black rounded-2xl transition-all duration-300"
+                        >
+                            <FontAwesomeIcon icon={faSignOutAlt} />
+                            <span>Logout</span>
+                        </button>
           </ul>
           {
             open?

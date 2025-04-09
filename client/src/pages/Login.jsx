@@ -4,41 +4,50 @@ import Particle from "../components/ParticleComponent/Particle";
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import LoginLoader from "../components/LoginLoader";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, isLoading } = useAuth();
 
   const handleSubmit = async (e) => {
+    // e.preventDefault();
+    // setIsLoading(true);
+
+    // try {
+    //   const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/clLogin`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({ email, password })
+    //   });
+
+    //   const data = await res.json();
+
+    //   console.log(data);
+
+
+    //   if (data.token) {
+    //     toast.success("Login Successful");
+    //     navigate('/home');
+    //   } else {
+    //     toast.error(data.message || "Login failed");
+    //   }
+    // } catch (error) {
+    //   toast.error(error.response?.data?.message || "Login failed");
+    // } finally {
+    //   setIsLoading(false);
+    // }
+
     e.preventDefault();
-    setIsLoading(true);
+    const result = await login(email, password, false); // true indicates this is a provider login
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/clLogin`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-
-      console.log(data);
-
-
-      if (data.token) {
-        toast.success("Login Successful");
-        navigate('/home');
-      } else {
-        toast.error(data.message || "Login failed");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
-    } finally {
-      setIsLoading(false);
+    if (result.success) {
+      // Navigation will be handled by the useAuth hook
     }
   };
 
