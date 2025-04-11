@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Container, Paper, Typography, TextField, Button, Avatar, Grid } from '@mui/material';
 import Navbar from '../../components/ProviderComponents/ProviderNavbar';
+import { toast } from 'react-toastify';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { AdvancedImage } from '@cloudinary/react';
+import { fill } from '@cloudinary/url-gen/actions/resize';
 
 const ProviderProfile = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +14,15 @@ const ProviderProfile = () => {
     serviceType: 'Plumbing',
     experience: '5 years',
     description: 'Professional plumbing services with 5 years of experience.',
-    location: 'New York, NY'
+    location: 'New York, NY',
+    profileImage: ''
+  });
+
+  // Initialize Cloudinary instance
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+    }
   });
 
   const handleInputChange = (e) => {
@@ -21,11 +33,48 @@ const ProviderProfile = () => {
     }));
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'provider-profile-photo'); // Using default upload preset
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME }/image/upload`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+      if (data.secure_url) {
+        setFormData(prev => ({
+          ...prev,
+          profileImage: data.secure_url
+        }));
+        toast.success('Profile image uploaded successfully!');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image. Please try again.');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Implement profile update logic
     console.log('Profile data:', formData);
   };
+
+  // Create Cloudinary image instance
+  const myImage = formData.profileImage
+    ? cld.image(formData.profileImage.split('/').pop().split('.')[0])
+      .resize(fill().width(200).height(200))
+    : null;
 
   return (
     <Box>
@@ -39,17 +88,57 @@ const ProviderProfile = () => {
           <Grid container spacing={4}>
             {/* Profile Picture Section */}
             <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
-              <Avatar
-                sx={{
-                  width: 200,
-                  height: 200,
-                  mb: 2,
-                  backgroundColor: '#1a1a1a',
-                  fontSize: '4rem'
-                }}
-              >
-                {formData.name.charAt(0)}
-              </Avatar>
+              <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                {myImage ? (
+                  <AdvancedImage
+                    cldImg={myImage}
+                    style={{
+                      width: 200,
+                      height: 200,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => document.getElementById('image-upload').click()}
+                  />
+                ) : (
+                  <Avatar
+                    sx={{
+                      width: 200,
+                      height: 200,
+                      mb: 2,
+                      backgroundColor: '#1a1a1a',
+                      fontSize: '4rem',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => document.getElementById('image-upload').click()}
+                  >
+                    {formData.name.charAt(0)}
+                  </Avatar>
+                )}
+                <input
+                  type="file"
+                  id="image-upload"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleImageUpload}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => document.getElementById('image-upload').click()}
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    backgroundColor: '#1a1a1a',
+                    '&:hover': {
+                      backgroundColor: '#333'
+                    }
+                  }}
+                >
+                  Change Photo
+                </Button>
+              </Box>
             </Grid>
 
             {/* Profile Information Section */}

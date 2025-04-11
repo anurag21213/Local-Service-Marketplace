@@ -3,8 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 const getInitialState = () => {
     try {
         const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
         return {
-            user: null,
+            user: user || null,
             token: token || null,
             isAuthenticated: !!token,
             isLoading: false,
@@ -34,6 +35,7 @@ const authSlice = createSlice({
                 state.isAuthenticated = true;
                 state.error = null;
                 localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
             } catch (error) {
                 console.error('Error setting credentials:', error);
                 state.error = 'Failed to set credentials';
@@ -52,6 +54,7 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.error = null;
                 localStorage.removeItem('token');
+                localStorage.removeItem('user');
             } catch (error) {
                 console.error('Error during logout:', error);
                 state.error = 'Failed to logout';

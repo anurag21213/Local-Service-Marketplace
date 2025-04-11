@@ -1,62 +1,100 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectCurrentToken } from '../store/slices/authSlice';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const ServiceDisplay = () => {
-    const { serviceType } = useParams();
-    const [searchQuery, setSearchQuery] = useState('');
+    const { service } = useParams();
+    const token = useSelector(selectCurrentToken);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [serviceProviders, setServiceProviders] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // console.log(service);
+
 
     // Mock data for service providers
-    const serviceProviders = [
-        {
-            id: 1,
-            name: 'John Plumbing Services',
-            rating: 4.8,
-            reviews: 120,
-            experience: '5 years',
-            price: '$50/hr',
-            available: true,
-            image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-            description: 'Professional plumbing services with 5 years of experience. Specialized in residential and commercial plumbing solutions.',
-            services: ['Pipe Installation', 'Leak Repair', 'Water Heater Installation', 'Drain Cleaning'],
-            certifications: ['Licensed Plumber', 'Certified Pipe Fitter'],
-            location: 'New York, NY',
-            responseTime: 'Within 2 hours',
-            languages: ['English', 'Spanish'],
-            portfolio: [
-                'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-            ],
-        },
-        {
-            id: 2,
-            name: 'Mike\'s Plumbing Solutions',
-            rating: 4.5,
-            reviews: 85,
-            experience: '3 years',
-            price: '$45/hr',
-            available: false,
-            image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-        },
-        {
-            id: 3,
-            name: 'Quick Fix Plumbing',
-            rating: 4.9,
-            reviews: 200,
-            experience: '8 years',
-            price: '$60/hr',
-            available: true,
-            image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-        },
-        // Add more mock data as needed
-    ];
+    // const serviceProviders = [
+    //     {
+    //         id: 1,
+    //         name: 'John Plumbing Services',
+    //         rating: 4.8,
+    //         reviews: 120,
+    //         experience: '5 years',
+    //         price: '$50/hr',
+    //         available: true,
+    //         image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+    //         description: 'Professional plumbing services with 5 years of experience. Specialized in residential and commercial plumbing solutions.',
+    //         services: ['Pipe Installation', 'Leak Repair', 'Water Heater Installation', 'Drain Cleaning'],
+    //         certifications: ['Licensed Plumber', 'Certified Pipe Fitter'],
+    //         location: 'New York, NY',
+    //         responseTime: 'Within 2 hours',
+    //         languages: ['English', 'Spanish'],
+    //         portfolio: [
+    //             'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+    //             'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+    //         ],
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Mike\'s Plumbing Solutions',
+    //         rating: 4.5,
+    //         reviews: 85,
+    //         experience: '3 years',
+    //         price: '$45/hr',
+    //         available: false,
+    //         image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'Quick Fix Plumbing',
+    //         rating: 4.9,
+    //         reviews: 200,
+    //         experience: '8 years',
+    //         price: '$60/hr',
+    //         available: true,
+    //         image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+    //     },
+    //     // Add more mock data as needed
+    // ];
 
-    const filteredProviders = serviceProviders.filter(provider =>
-        provider.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+
+    useEffect(() => {
+        const fetchServiceProviders = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/service-providers`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch service providers');
+                }
+
+                const data = await response.json();
+                setServiceProviders(data.serviceProviders);
+                console.log(serviceProviders);
+
+            } catch (error) {
+                console.error('Error fetching service providers:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (token) {
+            fetchServiceProviders();
+        }
+    }, [token]);
+
+
 
     const openProviderModal = (provider) => {
         setSelectedProvider(provider);
@@ -68,6 +106,14 @@ const ServiceDisplay = () => {
         setSelectedProvider(null);
     };
 
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -76,47 +122,33 @@ const ServiceDisplay = () => {
                 {/* Header Section */}
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-gray-800 mb-4">
-                        {serviceType ? `${serviceType} Service Providers` : 'All Service Providers'}
+                        {service ? `${service} Service Providers` : 'All Service Providers'}
                     </h1>
                     <p className="text-gray-600 max-w-2xl mx-auto">
                         Find the best service providers in your area. Compare ratings, reviews, and availability.
                     </p>
                 </div>
 
-                {/* Search Bar */}
-                <div className="max-w-xl mx-auto mb-12">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search service providers..."
-                            className="w-full px-6 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <i className="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-
                 {/* Service Provider Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredProviders.map((provider) => (
+                    {serviceProviders.map((provider) => (
                         <div
-                            key={provider.id}
+                            key={provider._id}
                             className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                         >
                             {/* Provider Image */}
                             <div className="relative h-48">
                                 <img
-                                    src={provider.image}
+                                    src={provider.profileImage || 'https://via.placeholder.com/300'}
                                     alt={provider.name}
                                     className="w-full h-full object-cover"
                                 />
                                 {/* Availability Badge */}
-                                <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium ${provider.available
+                                <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium ${provider?.isAvailable
                                     ? 'bg-green-100 text-green-800'
                                     : 'bg-red-100 text-red-800'
                                     }`}>
-                                    {provider.available ? 'Available' : 'Not Available'}
+                                    {provider?.isAvailable ? 'Available' : 'Not Available'}
                                 </div>
                             </div>
 
@@ -130,20 +162,20 @@ const ServiceDisplay = () => {
                                 <div className="flex items-center mb-4">
                                     <div className="flex items-center">
                                         <i className="fas fa-star text-yellow-400 mr-1"></i>
-                                        <span className="text-gray-700 font-medium">{provider.rating}</span>
+                                        <span className="text-gray-700 font-medium">{provider.rating || '4.5'}</span>
                                     </div>
                                     <span className="text-gray-500 mx-2">•</span>
-                                    <span className="text-gray-500">{provider.reviews} reviews</span>
+                                    <span className="text-gray-500">{provider.reviews || '0'} reviews</span>
                                 </div>
 
                                 {/* Experience and Price */}
                                 <div className="flex justify-between items-center mb-6">
                                     <div className="flex items-center text-gray-600">
                                         <i className="fas fa-briefcase mr-2"></i>
-                                        <span>{provider.experience} experience</span>
+                                        <span>{provider.experience || '2+'} years experience</span>
                                     </div>
                                     <div className="text-lg font-semibold text-blue-600">
-                                        {provider.price}
+                                        ₹{provider.hourlyRate || '500'}/hr
                                     </div>
                                 </div>
 
@@ -166,13 +198,13 @@ const ServiceDisplay = () => {
             </div>
 
             {/* Provider Profile Modal */}
-            {isModalOpen && (
+            {isModalOpen && selectedProvider && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                         {/* Modal Header */}
                         <div className="relative">
                             <img
-                                src={selectedProvider.image}
+                                src={selectedProvider.profileImage || 'https://via.placeholder.com/300'}
                                 alt={selectedProvider.name}
                                 className="w-full h-72 object-cover rounded-t-xl"
                             />
@@ -190,14 +222,14 @@ const ServiceDisplay = () => {
                                     <div className="flex items-center">
                                         <div className="flex items-center mr-4">
                                             <i className="fas fa-star text-yellow-400 mr-1"></i>
-                                            <span className="text-white font-medium">{selectedProvider.rating}</span>
-                                            <span className="text-gray-200 ml-1">({selectedProvider.reviews} reviews)</span>
+                                            <span className="text-white font-medium">{selectedProvider.rating || '4.5'}</span>
+                                            <span className="text-gray-200 ml-1">({selectedProvider.reviews || '0'} reviews)</span>
                                         </div>
-                                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${selectedProvider.available
+                                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${selectedProvider.availability?.isAvailable
                                             ? 'bg-green-100 text-green-800'
                                             : 'bg-red-100 text-red-800'
                                             }`}>
-                                            {selectedProvider.available ? 'Available' : 'Not Available'}
+                                            {selectedProvider.availability?.isAvailable ? 'Available' : 'Not Available'}
                                         </div>
                                     </div>
                                 </div>
@@ -208,7 +240,7 @@ const ServiceDisplay = () => {
                         <div className="p-8">
                             <div className="flex justify-between items-center mb-8">
                                 <div className="text-2xl font-bold text-blue-600">
-                                    {selectedProvider.price}
+                                    ₹{selectedProvider.hourlyRate || '500'}/hr
                                 </div>
                                 <button className="bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                                     Book Now
@@ -221,7 +253,7 @@ const ServiceDisplay = () => {
                                     <i className="fas fa-info-circle text-blue-500 mr-2"></i>
                                     About
                                 </h3>
-                                <p className="text-gray-600 leading-relaxed">{selectedProvider.description}</p>
+                                <p className="text-gray-600 leading-relaxed">{selectedProvider.bio || 'No description available'}</p>
                             </div>
 
                             {/* Services and Certifications */}
@@ -232,12 +264,12 @@ const ServiceDisplay = () => {
                                         Services Offered
                                     </h3>
                                     <ul className="space-y-3">
-                                        {selectedProvider.services.map((service, index) => (
+                                        {selectedProvider.services?.map((service, index) => (
                                             <li key={index} className="flex items-center text-gray-600">
                                                 <i className="fas fa-check-circle text-green-500 mr-3"></i>
                                                 {service}
                                             </li>
-                                        ))}
+                                        )) || <li className="text-gray-500">No services listed</li>}
                                     </ul>
                                 </div>
                                 <div className="bg-gray-50 p-6 rounded-xl">
@@ -246,12 +278,12 @@ const ServiceDisplay = () => {
                                         Certifications
                                     </h3>
                                     <ul className="space-y-3">
-                                        {selectedProvider.certifications.map((cert, index) => (
+                                        {selectedProvider.certifications?.map((cert, index) => (
                                             <li key={index} className="flex items-center text-gray-600">
                                                 <i className="fas fa-award text-blue-500 mr-3"></i>
                                                 {cert}
                                             </li>
-                                        ))}
+                                        )) || <li className="text-gray-500">No certifications listed</li>}
                                     </ul>
                                 </div>
                             </div>
@@ -263,7 +295,7 @@ const ServiceDisplay = () => {
                                         <i className="fas fa-map-marker-alt text-blue-500 text-xl mr-3"></i>
                                         <div>
                                             <p className="font-medium text-gray-800">Location</p>
-                                            <p>{selectedProvider.location}</p>
+                                            <p>{selectedProvider.location || 'Location not specified'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +304,7 @@ const ServiceDisplay = () => {
                                         <i className="fas fa-clock text-blue-500 text-xl mr-3"></i>
                                         <div>
                                             <p className="font-medium text-gray-800">Response Time</p>
-                                            <p>{selectedProvider.responseTime}</p>
+                                            <p>{selectedProvider.responseTime || 'Within 24 hours'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -281,31 +313,9 @@ const ServiceDisplay = () => {
                                         <i className="fas fa-language text-blue-500 text-xl mr-3"></i>
                                         <div>
                                             <p className="font-medium text-gray-800">Languages</p>
-                                            <p>{selectedProvider.languages.join(', ')}</p>
+                                            <p>{selectedProvider.languages?.join(', ') || 'English'}</p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Portfolio */}
-                            <div className="mb-8">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                                    <i className="fas fa-images text-blue-500 mr-2"></i>
-                                    Portfolio
-                                </h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {selectedProvider.portfolio.map((image, index) => (
-                                        <div key={index} className="relative group">
-                                            <img
-                                                src={image}
-                                                alt={`Portfolio ${index + 1}`}
-                                                className="w-full h-48 object-cover rounded-lg group-hover:opacity-90 transition-opacity duration-300"
-                                            />
-                                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
-                                                <i className="fas fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
-                                            </div>
-                                        </div>
-                                    ))}
                                 </div>
                             </div>
                         </div>

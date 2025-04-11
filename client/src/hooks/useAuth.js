@@ -107,7 +107,8 @@ export const useAuth = () => {
             });
 
             const data = await response.json();
-
+            // console.log(data);
+            
             if (data.token) {
                 const userData = {
                     ...data.user,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { faBars,faClose,faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faClose, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatch } from 'react-redux'
 import { logout } from '../store/slices/authSlice'
@@ -26,15 +26,15 @@ const Navbar = () => {
     return classes
 
   }
-  
-  const handleOpen=()=>{
-    setOpen((prev)=>!prev)
+
+  const handleOpen = () => {
+    setOpen((prev) => !prev)
   }
   const handleLogout = () => {
     dispatch(logout())
     toast.success('Logged out successfully')
-    navigate('/clientlogin')
-}
+    navigate('/')
+  }
 
   return (
     <div>
@@ -47,18 +47,24 @@ const Navbar = () => {
             <li className={applyActive('about')}>About Us</li>
             <NavLink to='/services' ><li className={applyActive('services')}>Services</li></NavLink>
             <li className={applyActive('contact')}>Contact Us</li>
+            <NavLink to='/profile' >
+              <li className={`${applyActive('profile')} flex items-center gap-2`}>
+                <FontAwesomeIcon icon={faUser} />
+                
+              </li>
+            </NavLink>
             <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 p-2 hover:bg-white hover:text-black rounded-2xl transition-all duration-300"
-                        >
-                            <FontAwesomeIcon icon={faSignOutAlt} />
-                            <span>Logout</span>
-                        </button>
+              onClick={handleLogout}
+              className="flex items-center gap-2 p-2 hover:bg-white hover:text-black rounded-2xl transition-all duration-300"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} />
+              <span>Logout</span>
+            </button>
           </ul>
           {
-            open?
-            <FontAwesomeIcon icon={faClose} className='text-[35px] lg:hidden' onClick={handleOpen} />:
-            <FontAwesomeIcon icon={faBars} className='text-[35px] lg:hidden' onClick={handleOpen} />
+            open ?
+              <FontAwesomeIcon icon={faClose} className='text-[35px] lg:hidden' onClick={handleOpen} /> :
+              <FontAwesomeIcon icon={faBars} className='text-[35px] lg:hidden' onClick={handleOpen} />
           }
 
 
@@ -75,6 +81,12 @@ const Navbar = () => {
             <NavLink to='/home' ><li className={applyActive('home')}>Home</li></NavLink>
             <li className={applyActive('about')}>About Us</li>
             <NavLink to='/services' ><li className={applyActive('services')}>Services</li></NavLink>
+            <NavLink to='/profile' >
+              <li className={`${applyActive('profile')} flex items-center gap-2`}>
+                <FontAwesomeIcon icon={faUser} />
+                <span>Profile</span>
+              </li>
+            </NavLink>
             <li className={applyActive('work')}>Our Work</li>
             <li className={applyActive('contact')}>Contact Us</li>
           </ul>
