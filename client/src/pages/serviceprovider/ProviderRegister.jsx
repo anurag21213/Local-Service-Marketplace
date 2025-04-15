@@ -83,7 +83,7 @@ const Register = () => {
       if (aadharFeatures && userFeatures) {
         let sim = cosineSimilarity(aadharFeatures, userFeatures);
         setSimilarity(sim.toFixed(4));
-        if (sim >= 0.92) {
+        if (sim >= 0.90) {
           setFormData({ ...formData, flag: 1 });
           toast.success("Successfully verified");
         } else {
@@ -105,13 +105,14 @@ const Register = () => {
     setIsLoading(true);
     let { confirmPassword, ...rest } = formData;
 
-    const resData = new FormData();
-    Object.keys(formData).forEach((key) => resData.append(key, formData[key]));
-
+   
     try {
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/spSignup`, {
         method: 'post',
-        body: resData,
+        body: JSON.stringify(rest),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       const data = await res.json();

@@ -5,8 +5,11 @@ import { toast } from 'react-toastify';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { AdvancedImage } from '@cloudinary/react';
 import { fill } from '@cloudinary/url-gen/actions/resize';
+import { useSelector } from 'react-redux';
+import { selectCurrentToken } from '../../store/slices/authSlice';
 
 const ProviderProfile = () => {
+  const token = useSelector(selectCurrentToken);
   const [formData, setFormData] = useState({
     name: 'John Doe',
     email: 'john@example.com',
@@ -64,9 +67,25 @@ const ProviderProfile = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // TODO: Implement profile update logic
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/updateSpProfile`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({profileImage:formData.profileImage})
+      }); 
+      if (!response.ok) {
+        throw new Error('Failed to update profile. Please try again.');
+      }
+      toast.success('Profile updated successfully!');
+    } catch (error) {
+      toast.error('Failed to update profile. Please try again.');
+    }
     console.log('Profile data:', formData);
   };
 
