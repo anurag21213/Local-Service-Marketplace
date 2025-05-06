@@ -50,7 +50,7 @@ const Navbar = () => {
             <NavLink to='/profile' >
               <li className={`${applyActive('profile')} flex items-center gap-2`}>
                 <FontAwesomeIcon icon={faUser} />
-                
+
               </li>
             </NavLink>
             <button

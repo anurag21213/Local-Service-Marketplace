@@ -105,7 +105,7 @@ const Register = () => {
     setIsLoading(true);
     let { confirmPassword, ...rest } = formData;
 
-   
+
     try {
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/spSignup`, {
         method: 'post',

@@ -54,6 +54,9 @@ const Navbar = () => {
                         <NavLink to='/providerdashboard'>
                             <li className={applyActive('providerdashboard')}>Dashboard</li>
                         </NavLink>
+                        <NavLink to='/pricing'>
+                            <li className={applyActive('pricing')}>Pricing</li>
+                        </NavLink>
 
                         <div className="relative">
                             <button

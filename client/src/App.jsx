@@ -1,4 +1,6 @@
-import { Route, Routes } from "react-router-dom"
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import './i18n'; // Import i18n configuration
 import Home from "./pages/Home"
 import Service from "./pages/Service"
 import Cover from "./pages/Cover"
@@ -13,19 +15,12 @@ import ProviderDashboard from "./pages/serviceprovider/ProviderDashboard";
 import ServiceRequests from "./pages/serviceprovider/ServiceRequests";
 import AvailabilityManager from "./pages/serviceprovider/AvailabilityManager";
 import ServiceDisplay from "./pages/ServiceDisplay";
-
-
-
-
+import Pricing from "./pages/serviceprovider/Pricing"
 
 function App() {
-
-
-
-
-
   return (
-    <>
+    <div>
+    
       <ToastContainer />
       <Routes>
         <Route path="/" Component={Cover} />
@@ -35,13 +30,15 @@ function App() {
         <Route path="/providerlogin" Component={ProviderLogin} />
         <Route path="/providerprofile" Component={ProviderProfile} />
         <Route path="/providerdashboard" Component={ProviderDashboard} />
+        <Route path="/pricing" Component={Pricing} />
 
         <Route path="/home" Component={Home} />
         <Route path="/services" Component={Service} />
         <Route path="/service/:service" Component={ServiceDisplay} />
         <Route path="/profile" Component={Profile} />
       </Routes>
-    </>
+    
+    </div>
   )
 }
 

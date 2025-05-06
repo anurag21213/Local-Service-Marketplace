@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { selectCurrentToken, selectCurrentUser } from '../../store/slices/authSlice';
 
-const ProviderProfileModal = ({ provider, onClose, onBookNow ,providerid}) => {
+const ProviderProfileModal = ({ provider, onClose, onBookNow ,providerid,showPay}) => {
     const token = useSelector(selectCurrentToken);
     const user = useSelector(selectCurrentUser);
 
@@ -75,12 +75,20 @@ const ProviderProfileModal = ({ provider, onClose, onBookNow ,providerid}) => {
                         <div className="text-2xl font-bold text-blue-600">
                             ₹{provider.hourlyRate || '500'}/hr
                         </div>
-                        <button
+                        {
+                            showPay?<button
+                            onClick={() => handleBookNow(providerid)}
+                            className="bg-green-600 text-white py-3 px-8 rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        >
+                            Pay Now
+                        </button>:<button
                             onClick={() => handleBookNow(providerid)}
                             className="bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                         >
                             Book Now
                         </button>
+                        }
+                        
                     </div>
 
                     {/* Description */}
