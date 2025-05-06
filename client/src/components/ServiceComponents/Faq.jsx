@@ -5,10 +5,10 @@ import FAQCom from './FAQCom'
 const Faq = () => {
    
     return (
-        <div className='flex items-center justify-center flex-col'>
+        <div className='flex items-center justify-center flex-col my-5'>
             <h1 className='text-4xl font-semibold my-5'>FAQ</h1>
-            <p className='text-xl p-2'>Looking to learn about more paid serach services for your business?</p>
-            <p className='text-xl p-2 mb-5'>Browse our FAQ's</p>
+            <p className='text-xl p-2'>Everything You Need to Know About Our Services</p>
+            <p className='text-xl p-2 mb-5'>Got Questions? We’ve Got Answers.</p>
 
             <div className='md:w-[70%] '>
                 {

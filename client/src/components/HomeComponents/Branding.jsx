@@ -9,7 +9,7 @@ const Branding = () => {
         <div key={index} className='mb-4 break-inside-avoid p-7 border-slate-900 border border-b-8 rounded-2xl drop-shadow-2xl flex flex-col items-center justify-center  ' >
             <h1 className='text-5xl font-semibold my-3'>{item.heading}</h1>
             {
-                item.img&&<img src={item.img} alt="img"  />
+                item.img&&<img src={item.img} alt="img" className='h-[350px] w-[450px]'  />
             }
             {
                 item.subh&&<h1 className='text-2xl text-slate-900'>{item.subh}</h1>

@@ -1,23 +1,21 @@
-import bgimg from '../assets/images/img2.jpg'
-import bgimg2 from '../assets/images/img1.jpg'
-import marketing from '../assets/images/marketing.png'
-export const wordData=[
+import bgimg from '../assets/images/plumber.jpg'
+import bgimg2 from '../assets/images/carpenter.jpg'
+import elec from '../assets/images/electrician.jpeg'
+export const wordData = [
     {
-        img:bgimg,
-        heading:"Haze Productions",
-        des:"We Design web development"
-
+        img: bgimg,
+        heading: "Plumbing",
+        des: "Reliable pipe repairs and fittings."
     },
     {
-        img:bgimg2,
-        heading:"Tharavadu",
-        des:"We Design web development"
-
+        img: bgimg2,
+        heading: "Carpentering",
+        des: "Custom woodwork and fixes."
     },
     {
-        img:marketing,
-        heading:"Smart Wealth",
-        des:"We Design web development"
-
+        img: elec,
+        heading: "Electrician",
+        des: "Safe wiring and installations."
     },
-]
+];
+

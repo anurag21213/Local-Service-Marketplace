@@ -14,7 +14,7 @@ const Service = () => {
       <ServiceCategories />
       
       <Faq />
-      <Demo />
+      
       <Footer />
     </div>
   )

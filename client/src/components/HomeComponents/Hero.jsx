@@ -3,6 +3,7 @@ import HeroCard from '../HomeComponents/HeroCard'
 import bgimg from '../../assets/images/img2.jpg'
 import bgimg2 from '../../assets/images/img1.jpg'
 import Button from '../Button'
+import {Link} from 'react-router-dom'
 
 const Hero = () => {
     return (
@@ -27,12 +28,10 @@ const Hero = () => {
                 <div className='w-full bg-gradient-to-t from-slate-800 to-black rounded-3xl text-white p-6 md:p-8'>
                     <div className='flex justify-between items-center'>
                     <h1 className='text-xl md:text-2xl font-semibold mb-6'>What are you looking for?</h1>
-                    <Button content="Explore Our Services" />
+                    <Link to={'/services'}><Button content="Explore Our Services" /></Link>
+                    
                     </div>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 my-4'>
-                        <HeroCard heading="PLUMBING" btnval="View Work" imgval={bgimg} />
-                        <HeroCard heading="ELECTRICIAN" btnval="View Work" imgval={bgimg2} />
-                    </div>
+                    
                 </div>
             </div>
         </div>
