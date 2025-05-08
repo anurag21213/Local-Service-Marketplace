@@ -1,29 +1,32 @@
-export const planData=[
+export const planData = [
     {
-        heading:"17,999/m",
-        li:[
-            "8 Posts+ 4 Stories/m",
-            "SMM (2 Platforms)",
-            "Basic SEO Optimization"
+        heading: "Monthly Plan – ₹999",
+        li: [
+            "Post up to 30 services",
+            "Visible on 2 service categories",
+            "Priority listing in local searches"
         ],
-         btnval:"I Like This"
-        
-      
+        btnval: "Choose Monthly"
     },
     {
-        heading:"27,999/m",
-        li:[
-            "8 Posts+ 4 Stories/m",
-            "SMM (2 Platforms)",
-            "Basic SEO Optimization",
-            "Ad Cmpsign Setup"
+        heading: "3-Month Plan – ₹2,499",
+        li: [
+            "Post up to 90 services",
+            "Visible on 3 service categories",
+            "Priority listing + Featured Badge",
+            "Monthly performance report"
         ],
-         btnval:"I Like This"
+        btnval: "Choose 3-Month"
     },
     {
-        heading:"",
-        subh:"Tailored For You",
-        des:"Apersonalized solution to fit your unique business needs.Contact us for custom quote.",
-        btnval:"Schedule a call"
+        heading: "6-Month Plan – ₹4,499",
+        li: [
+            "Post up to 200 services",
+            "Visible on All relevant categories",
+            "Top priority listing + Featured Badge",
+            "Dedicated support + Analytics dashboard"
+        ],
+        btnval: "Choose 6-Month"
     },
-]
+    
+];

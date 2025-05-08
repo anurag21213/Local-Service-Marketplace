@@ -6,7 +6,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { AdvancedImage } from '@cloudinary/react';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 import { useSelector } from 'react-redux';
-import { selectCurrentToken } from '../../store/slices/authSlice';
+import { selectCurrentToken, selectCurrentUser } from '../../store/slices/authSlice';
 
 const ProviderProfile = () => {
   const token = useSelector(selectCurrentToken);
@@ -20,6 +20,9 @@ const ProviderProfile = () => {
     location: 'New York, NY',
     profileImage: ''
   });
+  const user=useSelector(selectCurrentUser)
+
+  
 
   // Initialize Cloudinary instance
   const cld = new Cloudinary({
@@ -169,7 +172,7 @@ const ProviderProfile = () => {
                       fullWidth
                       label="Full Name"
                       name="name"
-                      value={formData.name}
+                      value={user.name}
                       onChange={handleInputChange}
                       variant="outlined"
                     />
@@ -179,7 +182,7 @@ const ProviderProfile = () => {
                       fullWidth
                       label="Email"
                       name="email"
-                      value={formData.email}
+                      value={user.email}
                       onChange={handleInputChange}
                       variant="outlined"
                     />
@@ -189,7 +192,7 @@ const ProviderProfile = () => {
                       fullWidth
                       label="Phone Number"
                       name="phone"
-                      value={formData.phone}
+                      value={user.phone}
                       onChange={handleInputChange}
                       variant="outlined"
                     />
@@ -199,7 +202,7 @@ const ProviderProfile = () => {
                       fullWidth
                       label="Service Type"
                       name="serviceType"
-                      value={formData.serviceType}
+                      value={user.category}
                       onChange={handleInputChange}
                       variant="outlined"
                     />
@@ -219,7 +222,7 @@ const ProviderProfile = () => {
                       fullWidth
                       label="Location"
                       name="location"
-                      value={formData.location}
+                      value={user.location}
                       onChange={handleInputChange}
                       variant="outlined"
                     />

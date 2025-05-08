@@ -44,9 +44,9 @@ const Navbar = () => {
 
           <ul className='hidden lg:flex items-center justify-evenly gap-10 font-normal text-xl text-slate-100'>
             <NavLink to='/home' ><li className={applyActive('home')}>Home</li></NavLink>
-            <li className={applyActive('about')}>About Us</li>
+            <NavLink to='/about' ><li className={applyActive('about')}>About Us</li></NavLink>
             <NavLink to='/services' ><li className={applyActive('services')}>Services</li></NavLink>
-            <li className={applyActive('contact')}>Contact Us</li>
+            <NavLink to='/contact' ><li className={applyActive('contact')}>Contact Us</li></NavLink>
             <NavLink to='/profile' >
               <li className={`${applyActive('profile')} flex items-center gap-2`}>
                 <FontAwesomeIcon icon={faUser} />

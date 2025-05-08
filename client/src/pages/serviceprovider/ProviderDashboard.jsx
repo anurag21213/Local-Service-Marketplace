@@ -11,6 +11,8 @@ import {
 import ServiceRequests from './ServiceRequests';
 import AvailabilityManager from './AvailabilityManager';
 import Navbar from '../../components/ProviderComponents/ProviderNavbar';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../store/slices/authSlice';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -34,6 +36,20 @@ function TabPanel(props) {
 
 function ProviderDashboard() {
     const [tabValue, setTabValue] = useState(0);
+    const user=useSelector(selectCurrentUser)
+    console.log(user);
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+    
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
@@ -56,16 +72,14 @@ function ProviderDashboard() {
                     <Grid container spacing={3} alignItems="center">
                         <Grid item xs={12} md={8}>
                             <Typography variant="h4" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}>
-                                Welcome back, John Doe
+                                {`Welcome back, ${user.name}` }
                             </Typography>
                             <Typography variant="subtitle1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                                 Here's what's happening with your services today
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={4} sx={{ textAlign: 'right' }}>
-                            <Avatar sx={{ width: 100, height: 100, margin: '0 auto', fontSize: '3rem' }}>
-                                J
-                            </Avatar>
+                            <img src={user.profileImage} alt='user profile' className='h-[200px] w-[200px] rounded-full' />
                         </Grid>
                     </Grid>
                 </Paper>
@@ -134,7 +148,7 @@ function ProviderDashboard() {
                         Recent Activity
                     </Typography>
                     <Grid container spacing={2}>
-                        {[1, 2, 3].map((item) => (
+                        {user.completedService.map((item) => (
                             <Grid item xs={12} key={item}>
                                 <Card sx={{ borderRadius: 2 }}>
                                     <CardContent>
@@ -146,15 +160,15 @@ function ProviderDashboard() {
                                             </Grid>
                                             <Grid item xs>
                                                 <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                                                    Service Request Completed
+                                                    {item.clientName}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Plumbing service for client #1234
+                                                    {item.clientEmail}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
                                                 <Typography variant="caption" color="text.secondary">
-                                                    2 hours ago
+                                                    {formatDate(item.completedAt)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>

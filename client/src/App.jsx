@@ -16,6 +16,8 @@ import ServiceRequests from "./pages/serviceprovider/ServiceRequests";
 import AvailabilityManager from "./pages/serviceprovider/AvailabilityManager";
 import ServiceDisplay from "./pages/ServiceDisplay";
 import Pricing from "./pages/serviceprovider/Pricing"
+import About from './pages/About';
+import Contact from './pages/Contact'
 
 function App() {
   return (
@@ -35,6 +37,9 @@ function App() {
         <Route path="/home" Component={Home} />
         <Route path="/services" Component={Service} />
         <Route path="/service/:service" Component={ServiceDisplay} />
+        <Route path="/about" Component={About} />
+        <Route path="/contact" Component={Contact} />
+
         <Route path="/profile" Component={Profile} />
       </Routes>
     

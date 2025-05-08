@@ -42,7 +42,7 @@ export const brandData = [
         des: "Dripping taps or blocked drains? Get fast and efficient plumbing solutions from nearby professionals you can trust."
     },
     {
-        heading: "Automobile Servicing",
+        heading: "Automotive Servicing",
         img: vehicleparts,
         des: "Car troubles? Our local auto service partners come to you — for everything from routine maintenance to emergency fixes."
     },

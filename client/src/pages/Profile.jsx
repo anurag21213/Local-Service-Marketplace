@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentUser, selectCurrentToken, setCredentials } from '../store/slices/authSlice'
-import { faEdit, faSave, faUser, faEnvelope, faPhone, faCalendarAlt, faMapMarkerAlt, faStar, faCheckCircle, faShieldAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSave, faUser, faEnvelope, faPhone, faCalendarAlt, faMapMarkerAlt, faStar, faCheckCircle, faShieldAlt, faSpinner,faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Profile = () => {
@@ -105,6 +105,17 @@ const Profile = () => {
             setIsLoading(false)
         }
     }
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -251,30 +262,41 @@ const Profile = () => {
                                     Booked Appointments
                                 </h2>
                                 <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                                    5 Active
+                                    {`${user.bookings.length} Active`}
                                 </span>
                             </div>
                             <div className="space-y-4">
-                                {[1, 2, 3].map((appointment) => (
-                                    <div key={appointment} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 border border-gray-100">
+                                {user.bookings.map((item) => (
+                                    <div key={item} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 border border-gray-100">
                                         <div className="flex items-center space-x-4">
                                             <img
-                                                src={profile}
+                                                src={item.spProfile}
                                                 alt="service provider"
                                                 className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
                                             />
                                             <div className="flex-1">
                                                 <div className="flex items-center justify-between">
-                                                    <h3 className="text-lg font-semibold text-gray-800">Service Provider Name</h3>
-                                                    <span className="text-green-600 font-medium flex items-center gap-1">
+                                                    <h3 className="text-lg font-semibold text-gray-800">{item.serviceProviderName}</h3>
+                                                    {item.status==="Completed"?<span className="text-green-600 font-medium flex items-center gap-1">
                                                         <FontAwesomeIcon icon={faCheckCircle} />
                                                         <span>Confirmed</span>
-                                                    </span>
+                                                    </span>:<span className="text-yellow-600 font-medium flex items-center gap-1">
+                                                        <FontAwesomeIcon icon={faClock} />
+                                                        <span>Pending</span>
+                                                    </span>}
+                                                    
+                                                    {item.paymentStatus==="Paid"?<span className="text-green-600 font-medium flex items-center gap-1">
+                                                        <FontAwesomeIcon icon={faCheckCircle} />
+                                                        <span>Payment Done</span>
+                                                    </span>:<span className="text-yellow-600 font-medium flex items-center gap-1">
+                                                        <FontAwesomeIcon icon={faClock} />
+                                                        <span>Payment Pending</span>
+                                                    </span>}
                                                 </div>
                                                 <div className="flex items-center justify-between mt-2 text-sm">
-                                                    <span className="text-gray-600 bg-gray-100 px-3 py-1 rounded-full">Service Type</span>
-                                                    <span className="text-gray-600">+91-75663734848</span>
-                                                    <span className="text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">Estimated in 2 days</span>
+                                                    <span className="text-gray-600 bg-gray-100 px-3 py-1 rounded-full">{item.serviceCategory}</span>
+                                                    <span className="text-gray-600">{item.serviceProviderPhone}</span>
+                                                    <span className="text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">{formatDate(item.serviceDate)}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -288,5 +310,7 @@ const Profile = () => {
         </div>
     )
 }
+
+
 
 export default Profile

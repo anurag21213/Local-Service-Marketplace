@@ -101,7 +101,7 @@ const Footer = () => {
                             </li>
                             <li className="flex items-start">
                                 <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 mt-1 mr-3" />
-                                <span className="text-gray-600">info@servicehub.com</span>
+                                <span className="text-gray-600">info@localservicemarketplace.com</span>
                             </li>
                         </ul>
                     </div>

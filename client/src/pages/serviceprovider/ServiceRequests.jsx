@@ -153,7 +153,7 @@ function ServiceRequests() {
             setShowOtpModal(true)
             toast.success('OTP sent successfully!');
         } catch (error) {
-            toast.error('Failed to reject request');
+            toast.error('Failed to send OTP');
         }
     }
 
@@ -161,11 +161,12 @@ function ServiceRequests() {
         try {
             setBooking(bookingId)
             const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/bookings/${bookingId}/complete`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body:JSON.stringify({"status":"Completed"})
             });
 
             if (!response.ok) {
