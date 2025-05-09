@@ -9,10 +9,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Local Service Marketplace</title>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'hi',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </head>
 
 <body>
   <div id="root"></div>
+  <div id="google_translate_element" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"
+    class="lang_tanslation"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 
