@@ -63,6 +63,9 @@ const Register = () => {
   };
 
   const cosineSimilarity = (vecA, vecB) => {
+    // console.log("vecA",vecA);
+    // console.log("vecB",vecB);
+    
     const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
     return dotProduct / (Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0)) * Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0)));
   };

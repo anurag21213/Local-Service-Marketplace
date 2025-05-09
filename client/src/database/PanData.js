@@ -1,32 +1,34 @@
 export const planData = [
     {
-        heading: "Monthly Plan – ₹999",
+        heading: "Basic Plan – ₹100",
+        description: "Perfect for individuals or small businesses starting out. Get essential visibility at a budget-friendly price.",
         li: [
-            "Post up to 30 services",
+            "Post up to 50 services",
             "Visible on 2 service categories",
             "Priority listing in local searches"
         ],
-        btnval: "Choose Monthly"
+        plan: "Basic"
     },
     {
-        heading: "3-Month Plan – ₹2,499",
+        heading: "Standard Plan – ₹190",
+        description: "Best suited for growing businesses looking to expand their service reach with extra visibility and reporting.",
         li: [
-            "Post up to 90 services",
+            "Post up to 100 services",
             "Visible on 3 service categories",
             "Priority listing + Featured Badge",
             "Monthly performance report"
         ],
-        btnval: "Choose 3-Month"
+        plan: "Standard"
     },
     {
-        heading: "6-Month Plan – ₹4,499",
+        heading: "Premium Plan – ₹300",
+        description: "Ideal for professionals and agencies aiming for maximum exposure and personalized support.",
         li: [
-            "Post up to 200 services",
-            "Visible on All relevant categories",
+            "Post up to 170 services",
+            "Visible on all relevant categories",
             "Top priority listing + Featured Badge",
             "Dedicated support + Analytics dashboard"
         ],
-        btnval: "Choose 6-Month"
+        plan: "Premium"
     },
-    
 ];

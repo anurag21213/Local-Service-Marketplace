@@ -48,7 +48,8 @@ const Navbar = () => {
         <div>
             <header className='max-w-7xl mx-auto p-2 my-5 bg-black text-white rounded-3xl'>
                 <nav className='flex items-center justify-between p-2'>
-                    <h1 className='text-3xl font-bold'>Local Service Marketplace</h1>
+                    <h1 className='text-3xl font-bold md:block hidden'>Local Service Marketplace</h1>
+                    <h1 className='text-3xl font-bold md:hidden '>LSP</h1>
 
                     <ul className='hidden lg:flex items-center justify-evenly gap-10 font-normal text-xl text-slate-100'>
                         <NavLink to='/providerdashboard'>

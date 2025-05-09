@@ -21,7 +21,7 @@ import { selectCurrentToken } from '../../store/slices/authSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
-function ServiceRequests() {
+function ServiceRequests({setActiveRequests}) {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [confirmed,setConfirmed]=useState(false);
@@ -45,6 +45,7 @@ function ServiceRequests() {
                 });
                 const data = await response.json();
                 setRequests(data.bookings);
+                setActiveRequests(data.bookings.length)
                 setLoading(false);
             } catch (error) {
                 toast.error('Failed to fetch requests');

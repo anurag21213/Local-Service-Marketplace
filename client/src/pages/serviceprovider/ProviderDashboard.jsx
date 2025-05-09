@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Tabs, Tab, Typography, Container, Paper, Grid, Card, CardContent, Avatar } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,6 +16,7 @@ import { selectCurrentUser } from '../../store/slices/authSlice';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
+
 
     return (
         <div
@@ -36,8 +37,21 @@ function TabPanel(props) {
 
 function ProviderDashboard() {
     const [tabValue, setTabValue] = useState(0);
-    const user=useSelector(selectCurrentUser)
-    console.log(user);
+    const user = useSelector(selectCurrentUser)
+    const [rating,setRating]=useState(0)
+    const [activeRequests,setActiveRequests]=useState(0)
+    // console.log(user);
+
+    useEffect(()=>{
+        const feed=user.completedService
+        let rate=0
+
+        for(let i=0;i<feed.length;i++){
+            rate+=parseInt(feed[i].feedback.rating)
+        }
+
+        setRating(rate/feed.length)
+    },[])
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -49,7 +63,7 @@ function ProviderDashboard() {
             minute: '2-digit'
         });
     };
-    
+
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
@@ -57,11 +71,14 @@ function ProviderDashboard() {
 
     // Mock data for dashboard stats
     const stats = [
-        { title: 'Total Services', value: '24', icon: <FontAwesomeIcon icon={faBriefcase} size="2x" />, color: '#1a1a1a' },
-        { title: 'Active Requests', value: '5', icon: <FontAwesomeIcon icon={faClock} size="2x" />, color: '#2196f3' },
-        { title: 'Rating', value: '4.8', icon: <FontAwesomeIcon icon={faStar} size="2x" />, color: '#ff9800' },
-        { title: 'Service Area', value: '3', icon: <FontAwesomeIcon icon={faLocationDot} size="2x" />, color: '#4caf50' }
+        { title: 'Total Services', value: 1, icon: <FontAwesomeIcon icon={faBriefcase} size="2x" />, color: '#1a1a1a' },
+        { title: 'Active Requests', value: activeRequests, icon: <FontAwesomeIcon icon={faClock} size="2x" />, color: '#2196f3' },
+        { title: 'Rating', value: rating, icon: <FontAwesomeIcon icon={faStar} size="2x" />, color: '#ff9800' },
+        { title: 'Service Area', value: user.servicePinCodes.length, icon: <FontAwesomeIcon icon={faLocationDot} size="2x" />, color: '#4caf50' }
     ];
+
+    
+    
 
     return (
         <Box>
@@ -72,7 +89,7 @@ function ProviderDashboard() {
                     <Grid container spacing={3} alignItems="center">
                         <Grid item xs={12} md={8}>
                             <Typography variant="h4" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}>
-                                {`Welcome back, ${user.name}` }
+                                {`Welcome back, ${user.name}`}
                             </Typography>
                             <Typography variant="subtitle1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                                 Here's what's happening with your services today
@@ -134,7 +151,7 @@ function ProviderDashboard() {
                     </Box>
 
                     <TabPanel value={tabValue} index={0}>
-                        <ServiceRequests />
+                        <ServiceRequests setActiveRequests={setActiveRequests} />
                     </TabPanel>
 
                     <TabPanel value={tabValue} index={1}>
@@ -165,6 +182,22 @@ function ProviderDashboard() {
                                                 <Typography variant="body2" color="text.secondary">
                                                     {item.clientEmail}
                                                 </Typography>
+                                                {item.feedback && (
+                                                    <Box sx={{ mt: 1, p: 1, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+                                                        <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+                                                            "{item.feedback.comment}"
+                                                        </Typography>
+                                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                            <FontAwesomeIcon
+                                                                icon={faStar}
+                                                                style={{ color: '#ffc107', marginRight: '4px' }}
+                                                            />
+                                                            <Typography variant="body2" color="text.secondary">
+                                                                Rating {item.rating}/5
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
+                                                )}
                                             </Grid>
                                             <Grid item>
                                                 <Typography variant="caption" color="text.secondary">

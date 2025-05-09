@@ -10,7 +10,7 @@ const Plans = () => {
             <p className='text-lg text-slate-900'>Tailored solutions to fit your business needs and budgets.</p>
             <div className='flex items-center justify-evenly max-w-8xl mx-auto flex-wrap'>
                 {
-                    planData.map((item,index)=><PlanCard key={index} heading={item.heading} subh={item.subh} li={item.li} des={item.des} btnval={item.btnval} />)
+                    planData.map((item,index)=><PlanCard key={index} heading={item.heading} subh={item.subh} li={item.li} des={item.des} plan={item.plan} />)
                 }
             </div>
         </div>

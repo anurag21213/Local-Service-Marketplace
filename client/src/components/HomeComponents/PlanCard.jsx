@@ -1,33 +1,129 @@
 import React from 'react'
-import { faRupee } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom'
+import { faArrowRight, faRupee } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Button from '../Button'
+import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
+import { selectCurrentToken, selectCurrentUser } from '../../store/slices/authSlice'
+// import Button from '../Button'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const PlanCard = ({heading,li,subh,des,btnval}) => {
+const PlanCard = ({ heading, li, subh, des, plan }) => {
+    const token = useSelector(selectCurrentToken)
+    const user = useSelector(selectCurrentUser)
+    const navigate = useNavigate()
+
+    const handlePayment = async () => {
+        try {
+            const orderResp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/subscribe/initiate`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ plan: plan })
+            });
+
+            if (!orderResp.ok) {
+                throw new Error('Failed to create order');
+            }
+
+            const order = await orderResp.json();
+            console.log(order);
+
+
+            const options = {
+                key: "rzp_test_NNN6WHXU4wxjmS",
+                amount: parseInt(order.amount),
+                currency: 'INR',
+                name: 'Local Service Marketplace',
+                description: 'Service Payment',
+                image: 'https://example.com/logo.png',
+                order_id: order.orderId,
+                handler: async function (response) {
+                    // console.log(response);
+                    try {
+                        const verifyResp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/subscribe/verify`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature,
+                                plan: plan,
+                                token:token
+                            })
+                        });
+
+                        if (!verifyResp.ok) {
+                            throw new Error('Verification failed');
+                        }
+
+                        const verifyData = await verifyResp.json();
+
+                        if (verifyData.status === 200 || verifyData.success) {
+                            toast.success('Payment verified successfully!');
+                            navigate('/providerdashboard');
+                        } else {
+                            toast.error('Payment verification failed.');
+                        }
+
+                    } catch (err) {
+                        console.error('Verification error:', err);
+                        toast.error('Error in verifying payment');
+                    }
+                },
+                prefill: {
+                    name: user?.name || 'Customer',
+                    email: user?.email || 'user@example.com',
+                    contact: user?.phone || '9000090000'
+                },
+                notes: {
+                    address: 'Local Service Pvt. Ltd.'
+                },
+                theme: {
+                    color: '#3399cc'
+                }
+            };
+
+            const razorpay = new window.Razorpay(options);
+            razorpay.open();
+        } catch (error) {
+            console.error('Payment error:', error);
+            toast.error("Error in subscription payment");
+        }
+    }
+
     return (
         <div className='w-[400px] border border-slate-900 border-b-8 rounded-2xl p-5 my-5'>
-            {
-                heading?
-                <h1 className='my-5 font-semibold text-4xl' ><FontAwesomeIcon icon={faRupee} className='mr-3' />{heading}</h1>:
-                <h1 className='my-5 font-semibold text-4xl' >{subh}</h1>
-            }
-            {
-                li?<ul className='w-full h-[600px] list-disc p-5 '>
-                    {
-                        li.map((item,index)=><li key={index} className='text-xl text-slate-900 my-5'>{item}</li>)
-                    }
-                
-            </ul>:
-            <ul className='w-full h-[500px] list-disc p-5 '>
-                   
-            </ul>
+            {heading ? (
+                <h1 className='my-5 font-semibold text-3xl'>
+                    <FontAwesomeIcon icon={faRupee} className='mr-3' />
+                    {heading}
+                </h1>
+            ) : (
+                <h1 className='my-5 font-semibold text-3xl'>{subh}</h1>
+            )}
+            {li ? (
+                <ul className='w-full min-h-[600px] list-disc p-5'>
+                    {li.map((item, index) => (
+                        <li key={index} className='text-xl text-slate-900 my-5'>{item}</li>
+                    ))}
+                </ul>
+            ) : (
+                <ul className='w-full h-[500px] list-disc p-5'></ul>
+            )}
+            {des && <p className='my-5 text-lg text-slate-900'>{des}</p>}
 
-            }
-            {
-                des&&<p className='my-5 text-lg text-slate-900'>{des}</p>
-            }
-            
-            <Button content={btnval} style="border border-slate-700" />
+            <button
+                onClick={handlePayment}
+                className='border md:p-4 p-2 bg-white text-black text-lg md:text-xl rounded-3xl hover:scale-105 hover:bg-gradient-to-bl from-blue-400 to-slate-500 hover:text-white'
+            >
+                I Prefer this <FontAwesomeIcon icon={faArrowRight} />
+            </button>
         </div>
     )
 }

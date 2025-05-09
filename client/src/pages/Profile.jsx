@@ -4,8 +4,9 @@ import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentUser, selectCurrentToken, setCredentials } from '../store/slices/authSlice'
-import { faEdit, faSave, faUser, faEnvelope, faPhone, faCalendarAlt, faMapMarkerAlt, faStar, faCheckCircle, faShieldAlt, faSpinner,faClock } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSave, faUser, faEnvelope, faPhone, faCalendarAlt, faMapMarkerAlt, faStar, faCheckCircle, faShieldAlt, faSpinner, faClock, faComment } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { toast } from 'react-toastify'
 
 const Profile = () => {
     const user = useSelector(selectCurrentUser)
@@ -19,6 +20,12 @@ const Profile = () => {
         phone: user?.phone || '',
         servicePinCode: user?.servicePinCode || '',
         category: user?.category || ''
+    })
+    const [feedbackModal, setFeedbackModal] = useState(false)
+    const [selectedBooking, setSelectedBooking] = useState(null)
+    const [feedback, setFeedback] = useState({
+        rating: 5,
+        comment: ''
     })
 
     // console.log(token);
@@ -63,7 +70,7 @@ const Profile = () => {
 
             const data = await response.json()
             // console.log("data",data);
-            if (data.message==="Client profile updated successfully") {
+            if (data.message === "Client profile updated successfully") {
                 // Create updated user object with all necessary fields
                 const updatedUser = {
                     ...user,
@@ -78,7 +85,7 @@ const Profile = () => {
                 }
 
                 // console.log(updatedUser);
-                
+
 
                 // Update Redux store with the complete user data
                 dispatch(setCredentials({
@@ -116,6 +123,34 @@ const Profile = () => {
             minute: '2-digit'
         });
     };
+
+    const handleFeedbackSubmit = async (bookingId) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/bookings/${bookingId}/feedback`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    bookingId,
+                    rating: feedback.rating,
+                    comment: feedback.comment
+                })
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to submit feedback')
+            }
+
+            toast.success('Feedback submitted successfully!')
+            setFeedbackModal(false)
+            setSelectedBooking(null)
+            setFeedback({ rating: 5, comment: '' })
+        } catch (error) {
+            toast.error('Failed to submit feedback. Please try again.')
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -267,7 +302,7 @@ const Profile = () => {
                             </div>
                             <div className="space-y-4">
                                 {user.bookings.map((item) => (
-                                    <div key={item} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 border border-gray-100">
+                                    <div key={item._id} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 border border-gray-100">
                                         <div className="flex items-center space-x-4">
                                             <img
                                                 src={item.spProfile}
@@ -277,27 +312,49 @@ const Profile = () => {
                                             <div className="flex-1">
                                                 <div className="flex items-center justify-between">
                                                     <h3 className="text-lg font-semibold text-gray-800">{item.serviceProviderName}</h3>
-                                                    {item.status==="Completed"?<span className="text-green-600 font-medium flex items-center gap-1">
-                                                        <FontAwesomeIcon icon={faCheckCircle} />
-                                                        <span>Confirmed</span>
-                                                    </span>:<span className="text-yellow-600 font-medium flex items-center gap-1">
-                                                        <FontAwesomeIcon icon={faClock} />
-                                                        <span>Pending</span>
-                                                    </span>}
-                                                    
-                                                    {item.paymentStatus==="Paid"?<span className="text-green-600 font-medium flex items-center gap-1">
-                                                        <FontAwesomeIcon icon={faCheckCircle} />
-                                                        <span>Payment Done</span>
-                                                    </span>:<span className="text-yellow-600 font-medium flex items-center gap-1">
-                                                        <FontAwesomeIcon icon={faClock} />
-                                                        <span>Payment Pending</span>
-                                                    </span>}
+                                                    {item.status === "Confirmed" ? (
+                                                        <span className="text-green-600 font-medium flex items-center gap-1">
+                                                            <FontAwesomeIcon icon={faCheckCircle} />
+                                                            <span>Confirmed</span>
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-yellow-600 font-medium flex items-center gap-1">
+                                                            <FontAwesomeIcon icon={faClock} />
+                                                            <span>Pending</span>
+                                                        </span>
+                                                    )}
+
+                                                    {item.paymentStatus === "Paid" ? (
+                                                        <span className="text-green-600 font-medium flex items-center gap-1">
+                                                            <FontAwesomeIcon icon={faCheckCircle} />
+                                                            <span>Payment Done</span>
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-yellow-600 font-medium flex items-center gap-1">
+                                                            <FontAwesomeIcon icon={faClock} />
+                                                            <span>Payment Pending</span>
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center justify-between mt-2 text-sm">
                                                     <span className="text-gray-600 bg-gray-100 px-3 py-1 rounded-full">{item.serviceCategory}</span>
                                                     <span className="text-gray-600">{item.serviceProviderPhone}</span>
                                                     <span className="text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">{formatDate(item.serviceDate)}</span>
                                                 </div>
+                                                {item.paymentStatus === "Paid" && !item.feedback && (
+                                                    <div className="mt-3 flex justify-end">
+                                                        <button
+                                                            onClick={() => {
+                                                                setSelectedBooking(item)
+                                                                setFeedbackModal(true)
+                                                            }}
+                                                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                                        >
+                                                            <FontAwesomeIcon icon={faComment} />
+                                                            <span>Give Feedback</span>
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -307,6 +364,59 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Add this modal component at the end of your return statement */}
+            {feedbackModal && selectedBooking && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md">
+                        <h3 className="text-xl font-semibold mb-4">Provide Feedback</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                <div className="flex gap-2">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            onClick={() => setFeedback(prev => ({ ...prev, rating: star }))}
+                                            className={`text-2xl ${feedback.rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
+                                        >
+                                            ★
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Comment</label>
+                                <textarea
+                                    value={feedback.comment}
+                                    onChange={(e) => setFeedback(prev => ({ ...prev, comment: e.target.value }))}
+                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    rows="4"
+                                    placeholder="Share your experience..."
+                                />
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => {
+                                        setFeedbackModal(false)
+                                        setSelectedBooking(null)
+                                        setFeedback({ rating: 5, comment: '' })
+                                    }}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleFeedbackSubmit(selectedBooking._id)}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                >
+                                    Submit Feedback
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
