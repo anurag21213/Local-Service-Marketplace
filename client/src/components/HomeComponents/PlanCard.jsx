@@ -1,20 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { faArrowRight, faRupee } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { selectCurrentToken, selectCurrentUser } from '../../store/slices/authSlice'
-// import Button from '../Button'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Loader from '../Loader'
 
 const PlanCard = ({ heading, li, subh, des, plan }) => {
     const token = useSelector(selectCurrentToken)
     const user = useSelector(selectCurrentUser)
     const navigate = useNavigate()
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false)
+    const [isVerifyingPayment, setIsVerifyingPayment] = useState(false)
+    const [paymentStatus, setPaymentStatus] = useState('')
 
     const handlePayment = async () => {
         try {
+            setIsPaymentLoading(true)
+            setPaymentStatus('Initializing payment...')
             const orderResp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/subscribe/initiate`, {
                 method: 'POST',
                 headers: {
@@ -31,7 +35,6 @@ const PlanCard = ({ heading, li, subh, des, plan }) => {
             const order = await orderResp.json();
             console.log(order);
 
-
             const options = {
                 key: "rzp_test_NNN6WHXU4wxjmS",
                 amount: parseInt(order.amount),
@@ -41,8 +44,9 @@ const PlanCard = ({ heading, li, subh, des, plan }) => {
                 image: 'https://example.com/logo.png',
                 order_id: order.orderId,
                 handler: async function (response) {
-                    // console.log(response);
                     try {
+                        setIsVerifyingPayment(true)
+                        setPaymentStatus('Verifying payment...')
                         const verifyResp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/subscribe/verify`, {
                             method: 'POST',
                             headers: {
@@ -54,7 +58,7 @@ const PlanCard = ({ heading, li, subh, des, plan }) => {
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_signature: response.razorpay_signature,
                                 plan: plan,
-                                token:token
+                                token: token
                             })
                         });
 
@@ -74,6 +78,9 @@ const PlanCard = ({ heading, li, subh, des, plan }) => {
                     } catch (err) {
                         console.error('Verification error:', err);
                         toast.error('Error in verifying payment');
+                    } finally {
+                        setIsVerifyingPayment(false)
+                        setPaymentStatus('')
                     }
                 },
                 prefill: {
@@ -94,37 +101,52 @@ const PlanCard = ({ heading, li, subh, des, plan }) => {
         } catch (error) {
             console.error('Payment error:', error);
             toast.error("Error in subscription payment");
+        } finally {
+            setIsPaymentLoading(false)
+            setPaymentStatus('')
         }
     }
 
     return (
-        <div className='w-[400px] border border-slate-900 border-b-8 rounded-2xl p-5 my-5'>
-            {heading ? (
-                <h1 className='my-5 font-semibold text-3xl'>
-                    <FontAwesomeIcon icon={faRupee} className='mr-3' />
-                    {heading}
-                </h1>
-            ) : (
-                <h1 className='my-5 font-semibold text-3xl'>{subh}</h1>
-            )}
-            {li ? (
-                <ul className='w-full min-h-[600px] list-disc p-5'>
-                    {li.map((item, index) => (
-                        <li key={index} className='text-xl text-slate-900 my-5'>{item}</li>
-                    ))}
-                </ul>
-            ) : (
-                <ul className='w-full h-[500px] list-disc p-5'></ul>
-            )}
-            {des && <p className='my-5 text-lg text-slate-900'>{des}</p>}
+        <>
+            {isPaymentLoading && <Loader message={paymentStatus || "Processing Payment..."} />}
+            {isVerifyingPayment && <Loader message={paymentStatus || "Verifying Payment..."} />}
+            <div className='w-[400px] border border-slate-900 border-b-8 rounded-2xl p-5 my-5'>
+                {heading ? (
+                    <h1 className='my-5 font-semibold text-3xl'>
+                        <FontAwesomeIcon icon={faRupee} className='mr-3' />
+                        {heading}
+                    </h1>
+                ) : (
+                    <h1 className='my-5 font-semibold text-3xl'>{subh}</h1>
+                )}
+                {li ? (
+                    <ul className='w-full min-h-[600px] list-disc p-5'>
+                        {li.map((item, index) => (
+                            <li key={index} className='text-xl text-slate-900 my-5'>{item}</li>
+                        ))}
+                    </ul>
+                ) : (
+                    <ul className='w-full h-[500px] list-disc p-5'></ul>
+                )}
+                {des && <p className='my-5 text-lg text-slate-900'>{des}</p>}
 
-            <button
-                onClick={handlePayment}
-                className='border md:p-4 p-2 bg-white text-black text-lg md:text-xl rounded-3xl hover:scale-105 hover:bg-gradient-to-bl from-blue-400 to-slate-500 hover:text-white'
-            >
-                I Prefer this <FontAwesomeIcon icon={faArrowRight} />
-            </button>
-        </div>
+                <button
+                    onClick={handlePayment}
+                    disabled={isPaymentLoading || isVerifyingPayment}
+                    className='border md:p-4 p-2 bg-white text-black text-lg md:text-xl rounded-3xl hover:scale-105 hover:bg-gradient-to-bl from-blue-400 to-slate-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                    {isPaymentLoading || isVerifyingPayment ? (
+                        <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-black mr-2"></div>
+                            {paymentStatus || "Processing..."}
+                        </div>
+                    ) : (
+                        <>I Prefer this <FontAwesomeIcon icon={faArrowRight} /></>
+                    )}
+                </button>
+            </div>
+        </>
     )
 }
 

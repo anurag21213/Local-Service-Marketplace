@@ -18,6 +18,8 @@ import ServiceDisplay from "./pages/ServiceDisplay";
 import Pricing from "./pages/serviceprovider/Pricing"
 import About from './pages/About';
 import Contact from './pages/Contact'
+import AdminLogin from './pages/Admin/AdminLogin';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 
 function App() {
   return (
@@ -39,6 +41,9 @@ function App() {
         <Route path="/service/:service" Component={ServiceDisplay} />
         <Route path="/about" Component={About} />
         <Route path="/contact" Component={Contact} />
+
+        <Route path="/admin" Component={AdminLogin} />
+        <Route path="/admindashboard" Component={AdminDashboard} />
 
         <Route path="/profile" Component={Profile} />
       </Routes>

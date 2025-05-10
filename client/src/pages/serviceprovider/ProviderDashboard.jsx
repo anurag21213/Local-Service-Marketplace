@@ -6,7 +6,8 @@ import {
     faClock,
     faStar,
     faLocationDot,
-    faCheckCircle
+    faCheckCircle,
+    faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
 import ServiceRequests from './ServiceRequests';
 import AvailabilityManager from './AvailabilityManager';
@@ -38,20 +39,33 @@ function TabPanel(props) {
 function ProviderDashboard() {
     const [tabValue, setTabValue] = useState(0);
     const user = useSelector(selectCurrentUser)
-    const [rating,setRating]=useState(0)
-    const [activeRequests,setActiveRequests]=useState(0)
+    const [rating, setRating] = useState(0)
+    const [activeRequests, setActiveRequests] = useState(0)
     // console.log(user);
 
-    useEffect(()=>{
-        const feed=user.completedService
-        let rate=0
+    useEffect(() => {
+        const calculateAverageRating = () => {
+            if (!user.completedService || user.completedService.length === 0) {
+                setRating(0);
+                return;
+            }
 
-        for(let i=0;i<feed.length;i++){
-            rate+=parseInt(feed[i].feedback.rating)
-        }
+            const validRatings = user.completedService
+                .filter(service => service?.feedback?.rating)
+                .map(service => parseFloat(service.feedback.rating));
 
-        setRating(rate/feed.length)
-    },[])
+            if (validRatings.length === 0) {
+                setRating(0);
+                return;
+            }
+
+            const sum = validRatings.reduce((acc, curr) => acc + curr, 0);
+            const average = sum / validRatings.length;
+            setRating(parseFloat(average.toFixed(1))); // Round to 1 decimal place
+        };
+
+        calculateAverageRating();
+    }, [user.completedService]);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -71,14 +85,14 @@ function ProviderDashboard() {
 
     // Mock data for dashboard stats
     const stats = [
-        { title: 'Total Services', value: 1, icon: <FontAwesomeIcon icon={faBriefcase} size="2x" />, color: '#1a1a1a' },
+        { title: 'Active Plan', value: user.subscription.plan, icon: <FontAwesomeIcon icon={faCircleCheck} size="2x" />, color: 'green', credit: user.subscription.serviceCredits },
         { title: 'Active Requests', value: activeRequests, icon: <FontAwesomeIcon icon={faClock} size="2x" />, color: '#2196f3' },
         { title: 'Rating', value: rating, icon: <FontAwesomeIcon icon={faStar} size="2x" />, color: '#ff9800' },
         { title: 'Service Area', value: user.servicePinCodes.length, icon: <FontAwesomeIcon icon={faLocationDot} size="2x" />, color: '#4caf50' }
     ];
 
-    
-    
+
+
 
     return (
         <Box>
@@ -113,6 +127,11 @@ function ProviderDashboard() {
                                     <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
                                         {stat.value}
                                     </Typography>
+                                    {
+                                        stat.credit && <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                            Remaining Credits: {stat.credit}
+                                        </Typography>
+                                    }
                                     <Typography color="text.secondary">
                                         {stat.title}
                                     </Typography>

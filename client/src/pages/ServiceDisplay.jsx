@@ -5,6 +5,7 @@ import { selectCurrentToken, selectCurrentUser } from '../store/slices/authSlice
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProviderProfileModal from '../components/ProviderComponents/ProviderProfileModal';
+import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 
 const ServiceDisplay = () => {
@@ -15,7 +16,11 @@ const ServiceDisplay = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [serviceProviders, setServiceProviders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [showPayBtn,setShowPayBtn]=useState(false)
+    const [showPayBtn, setShowPayBtn] = useState(false);
+    const [isBookingLoading, setIsBookingLoading] = useState(false);
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+    const [isEmailLoading, setIsEmailLoading] = useState(false);
+    const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,10 +40,10 @@ const ServiceDisplay = () => {
                 }
 
                 const data = await response.json();
-                
+
                 setServiceProviders(data.serviceProviders);
                 console.log(serviceProviders);
-                
+
             } catch (error) {
                 console.error('Error fetching service providers:', error);
             } finally {
@@ -51,31 +56,37 @@ const ServiceDisplay = () => {
         }
     }, [token]);
 
-    const sendEmail=async(paymentId)=>{
-        setTimeout(async() => {
-            const sendEmail=await fetch(`${import.meta.env.VITE_BASE_URL}/api/sendemail`,{
-                method:"post",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({razorpay_payment_id:paymentId})
-            })
-            const emaildata=await sendEmail.json()
-            console.log(emaildata);
-            
-            if(emaildata.message==="Confirmation sent successfully"){
-                toast.success('Payment verified successfully!');
-                navigate('/home');
-            }
-        }, 1000);
-    }
+    const sendEmail = async (paymentId) => {
+        setIsEmailLoading(true);
+        try {
+            setTimeout(async () => {
+                const sendEmail = await fetch(`${import.meta.env.VITE_BASE_URL}/api/sendemail`, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ razorpay_payment_id: paymentId })
+                });
+                const emaildata = await sendEmail.json();
+                console.log(emaildata);
 
-    
+                if (emaildata.message === "Confirmation sent successfully") {
+                    toast.success('Payment verified successfully!');
+                    navigate('/home');
+                }
+            }, 1000);
+        } catch (error) {
+            toast.error('Failed to send confirmation email');
+        } finally {
+            setIsEmailLoading(false);
+        }
+    }
 
     const handleBookNow = async (e, providerId) => {
         e.preventDefault();
         try {
-            if(!showPayBtn){
+            if (!showPayBtn) {
+                setIsBookingLoading(true);
                 const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/book`, {
                     method: 'POST',
                     headers: {
@@ -87,14 +98,15 @@ const ServiceDisplay = () => {
                         serviceLocation: user.servicePinCode
                     })
                 });
-    
+
                 if (!response.ok) throw new Error('Failed to book now');
-    
+
                 const data = await response.json();
-                if(data){
-                    setShowPayBtn(true)
+                if (data) {
+                    setShowPayBtn(true);
                 }
-            }else{
+            } else {
+                setIsPaymentLoading(true);
                 const resp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/clProfile`, {
                     method: 'GET',
                     headers: {
@@ -102,15 +114,15 @@ const ServiceDisplay = () => {
                         'Content-Type': 'application/json'
                     }
                 });
-        
+
                 const info = await resp.json();
                 const bookingArray = info.user.bookings;
                 const booking = bookingArray.find(
                     (b) => b.serviceProviderId === providerId && b.status === 'Confirmed'
                 );
-        
+
                 if (!booking) return toast.error("Booking not confirmed yet");
-        
+
                 const orderResp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/bookings/${booking._id}/pay`, {
                     method: 'POST',
                     headers: {
@@ -119,9 +131,9 @@ const ServiceDisplay = () => {
                     },
                     body: JSON.stringify({ paymentMethod: 'Online' })
                 });
-        
+
                 const order = await orderResp.json();
-        
+
                 const options = {
                     key: 'rzp_test_NNN6WHXU4wxjmS',
                     amount: order.order.amount,
@@ -132,11 +144,11 @@ const ServiceDisplay = () => {
                     order_id: order.order.id,
                     handler: async function (response) {
                         try {
+                            setIsVerifyingPayment(true);
                             const verifyResp = await fetch(`${import.meta.env.VITE_BASE_URL}/api/payments/verify`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    // Authorization: `Bearer ${token}`
                                 },
                                 body: JSON.stringify({
                                     razorpay_payment_id: response.razorpay_payment_id,
@@ -144,26 +156,20 @@ const ServiceDisplay = () => {
                                     razorpay_signature: response.razorpay_signature
                                 })
                             });
-        
+
                             const verifyData = await verifyResp.json();
                             console.log(verifyData);
-                            
-                            if (verifyData.status === 200 || verifyData.success) {
 
-                                await sendEmail(response.razorpay_payment_id)
-                                
-                                // toast.success('Payment verified successfully!');
-                                // navigate('/home');
-                                
+                            if (verifyData.status === 200 || verifyData.success) {
+                                await sendEmail(response.razorpay_payment_id);
                             } else {
                                 toast.error('Payment verification failed.');
                             }
                         } catch (err) {
                             toast.error('Error in verifying payment');
+                        } finally {
+                            setIsVerifyingPayment(false);
                         }
-        
-                        console.log(response);
-                        
                     },
                     prefill: {
                         name: user.name || 'Customer',
@@ -177,17 +183,18 @@ const ServiceDisplay = () => {
                         color: '#3399cc'
                     }
                 };
-        
+
                 const razorpay = new window.Razorpay(options);
                 razorpay.open();
-            }   
+            }
         } catch (error) {
             console.error(error);
             toast.error('Failed to process booking or payment');
+        } finally {
+            setIsBookingLoading(false);
+            setIsPaymentLoading(false);
         }
     };
-
-    
 
     const openProviderModal = (provider) => {
         setSelectedProvider(provider);
@@ -210,6 +217,9 @@ const ServiceDisplay = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
+            {isVerifyingPayment && <Loader message="Verifying Payment..." />}
+            {isEmailLoading && <Loader message="Sending Confirmation..." />}
+            {isLoading && <Loader message="Loading Service Providers..." />}
 
             <div className="container mx-auto px-4 py-8">
                 <div className="text-center mb-12">
@@ -233,9 +243,8 @@ const ServiceDisplay = () => {
                                     alt={provider.name}
                                     className="w-full h-full object-cover"
                                 />
-                                <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium ${
-                                    provider?.isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                }`}>
+                                <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium ${provider?.isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                    }`}>
                                     {provider?.isAvailable ? 'Available' : 'Not Available'}
                                 </div>
                             </div>
@@ -263,20 +272,38 @@ const ServiceDisplay = () => {
                                 </div>
 
                                 <div className="flex space-x-4">
-                                    {
-                                        showPayBtn?<button
-                                        onClick={(e) => handleBookNow(e, provider._id)}
-                                        className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300"
-                                    >
-                                        Pay Now
-                                    </button>:<button
-                                        onClick={(e) => handleBookNow(e, provider._id)}
-                                        className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300"
-                                    >
-                                        Book Now
-                                    </button>
-                                    }
-                                    
+                                    {showPayBtn ? (
+                                        <button
+                                            onClick={(e) => handleBookNow(e, provider._id)}
+                                            disabled={isPaymentLoading}
+                                            className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isPaymentLoading ? (
+                                                <div className="flex items-center justify-center">
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                                                    Processing...
+                                                </div>
+                                            ) : (
+                                                'Pay Now'
+                                            )}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={(e) => handleBookNow(e, provider._id)}
+                                            disabled={isBookingLoading}
+                                            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isBookingLoading ? (
+                                                <div className="flex items-center justify-center">
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                                                    Booking...
+                                                </div>
+                                            ) : (
+                                                'Book Now'
+                                            )}
+                                        </button>
+                                    )}
+
                                     <button
                                         onClick={() => openProviderModal(provider)}
                                         className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors duration-300"
